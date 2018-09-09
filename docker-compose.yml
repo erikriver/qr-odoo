@@ -1,0 +1,37 @@
+## Development Compose Environment
+##
+
+version: '2'
+
+services:
+  web:
+    image: odoo:11.0
+    depends_on:
+      - db
+    ports: 
+      - "8069:8069"
+    volumes:
+      - odoo-web-data:/var/lib/data
+      - odoo-addons:/mnt/extra-addons
+      - './test/odoo.conf:/etc/odoo/odoo.conf:ro'
+      - ./qr:/mnt/extra-addons/qr
+    environment:
+      - HOST=db
+      - USER=odoo
+      - PASSWORD=odoo
+  db:
+    image: postgres:9.4
+    environment:
+      - POSTGRES_PASSWORD=odoo
+      - POSTGRES_USER=odoo
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes: 
+      - "odoo-db-data:/var/lib/postgresql/data/pgdata:rw"
+
+
+
+volumes:
+  odoo-db-data:
+  odoo-web-data:
+  odoo-config:
+  odoo-addons:
